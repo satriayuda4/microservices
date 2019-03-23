@@ -1,0 +1,80 @@
+image: docker:latest
+services:
+  - docker:dind
+  
+variables:
+  DOCKER_DRIVER: overlay2
+  SPRING_PROFILES_ACTIVE: gitlab-ci
+
+#force update
+stages:
+  - build
+  - package
+  
+registry-service-build:
+  image: maven:3-jdk-8-alpine
+  stage: build
+  script: 
+  - cd ./registry-service
+  - "mvn package -B"
+  artifacts:
+    paths:
+      - ./registry-service/target/*.jar
+
+customer-service-build:
+  image: maven:3-jdk-8-alpine
+  stage: build
+  script: 
+  - cd ./customer-service
+  - "mvn package -B"
+  artifacts:
+    paths:
+      - ./customer-service/target/*.jar
+      
+account-service-build:
+  image: maven:3-jdk-8-alpine
+  stage: build
+  script: 
+  - cd ./account-service
+  - "mvn package -B"
+  artifacts:
+    paths:
+      - ./account-service/target/*.jar
+
+gateway-service-build:
+  image: maven:3-jdk-8-alpine
+  stage: build
+  script: 
+  - cd ./gateway-service
+  - "mvn package -B"
+  artifacts:
+    paths:
+      - ./gateway-service/target/*.jar
+
+registry-service-docker-build:
+  stage: package
+  script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
+    - "docker build -t ${CI_REGISTRY}/${CI_PROJECT_PATH}/registry-service:${CI_COMMIT_REF_NAME} ./registry-service/."
+    - "docker push ${CI_REGISTRY}/${CI_PROJECT_PATH}/registry-service:${CI_COMMIT_REF_NAME}"
+
+account-service-docker-build:
+  stage: package
+  script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
+    - "docker build -t ${CI_REGISTRY}/${CI_PROJECT_PATH}/account-service:${CI_COMMIT_REF_NAME} ./account-service/."
+    - "docker push ${CI_REGISTRY}/${CI_PROJECT_PATH}/account-service:${CI_COMMIT_REF_NAME}"
+
+customer-service-docker-build:
+  stage: package
+  script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
+    - "docker build -t ${CI_REGISTRY}/${CI_PROJECT_PATH}/customer-service:${CI_COMMIT_REF_NAME} ./customer-service/."
+    - "docker push ${CI_REGISTRY}/${CI_PROJECT_PATH}/customer-service:${CI_COMMIT_REF_NAME}"
+
+gateway-service-docker-build:
+  stage: package
+  script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
+    - "docker build -t ${CI_REGISTRY}/${CI_PROJECT_PATH}/gateway-service:${CI_COMMIT_REF_NAME} ./gateway-service/."
+    - "docker push ${CI_REGISTRY}/${CI_PROJECT_PATH}/gateway-service:${CI_COMMIT_REF_NAME}"
