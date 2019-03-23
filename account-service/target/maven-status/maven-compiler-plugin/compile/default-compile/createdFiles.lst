@@ -1,0 +1,5 @@
+id\ac\ugm\accountservice\entity\Account.class
+id\ac\ugm\accountservice\repo\AccountRepository.class
+id\ac\ugm\accountservice\AccountServiceApplication.class
+id\ac\ugm\accountservice\controller\AccountController.class
+id\ac\ugm\accountservice\client\CustomerServiceClient.class
