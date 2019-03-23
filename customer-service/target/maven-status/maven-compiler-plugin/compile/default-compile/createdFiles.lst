@@ -1,0 +1,4 @@
+id\ac\ugm\customerservice\entity\Customer.class
+id\ac\ugm\customerservice\controller\CustomerController.class
+id\ac\ugm\customerservice\repo\CustomerRepository.class
+id\ac\ugm\customerservice\CustomerServiceApplication.class
